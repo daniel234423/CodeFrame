@@ -3,6 +3,7 @@ import imutils as imt
 from flask import render_template, Response, redirect, url_for
 from app.create_app import aplicacion
 from app.connecting import  conexion
+import requests
 
 app = aplicacion()
 
