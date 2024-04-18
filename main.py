@@ -3,18 +3,20 @@ import imutils as imt
 from flask import render_template, Response, redirect, url_for
 from app.create_app import aplicacion
 from app.connecting import  conexion
-import requests
+
 
 app = aplicacion()
 
-foto = cv.VideoCapture(0)  # Cámara de video en la posición 0, que es el dispositivo predeterminado
+foto = cv.VideoCapture(1)  # Cámara de video en la posición 0, que es el dispositivo predeterminado
 
 def obtener_frame():
     while True:
         ret, frame = frames_camara()
-        if not ret:break
+        if not ret:
+            break
         else:
-            yield b"--frame\r\n content-Type: image/jpeg\r\n"+ frame + b"\r\n"
+            yield (b'--frame\r\n'   
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 def frames_camara():
     ret, frame = foto.read()    
@@ -27,7 +29,7 @@ def frames_camara():
 
 @app.route("/camara")
 def camara():
-    return Response(obtener_frame())
+    return Response(obtener_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/almacenar_foto")
 def almacenar_foto():
